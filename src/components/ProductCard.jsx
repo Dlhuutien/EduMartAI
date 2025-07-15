@@ -10,47 +10,60 @@ import {
   Chip,
   Rating,
   Zoom,
-  Skeleton
+  Skeleton,
 } from "@mui/material";
 import { Favorite, FavoriteBorder, Group } from "@mui/icons-material";
 
 const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", {
     style: "currency",
-    currency: "VND"
+    currency: "VND",
   }).format(price);
 
-const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct }) => {
+const ProductCard = ({
+  product,
+  toggleFavorite,
+  favorites,
+  setSelectedProduct,
+}) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
-    <Zoom in={true} style={{ transitionDelay: '100ms' }}>
+    <Zoom in={true} style={{ transitionDelay: "100ms" }}>
       <Card
         sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          cursor: 'pointer',
-          position: 'relative',
-          overflow: 'hidden',
-          '&:hover .card-image': { transform: 'scale(1.05)' },
-          '&:hover .card-overlay': { opacity: 1 },
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          cursor: "pointer",
+          position: "relative",
+          overflow: "hidden",
+          "&:hover .card-image": { transform: "scale(1.05)" },
+          "&:hover .card-overlay": { opacity: 1 },
         }}
       >
-        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+        <Box sx={{ position: "relative", overflow: "hidden" }}>
           {!imageLoaded && (
-            <Skeleton variant="rectangular" width="100%" height={200} />
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              sx={{ aspectRatio: "16/9" }}
+            />
           )}
           <CardMedia
             component="img"
-            height="200"
             image={product.image}
             alt={product.name}
             className="card-image"
             onLoad={() => setImageLoaded(true)}
             sx={{
-              display: imageLoaded ? 'block' : 'none',
-              transition: 'transform 0.3s ease-in-out',
+              display: imageLoaded ? "block" : "none",
+              width: "100%",
+              aspectRatio: "16/9", // ✅ Đảm bảo khung hình ngang đều nhau
+              objectFit: "cover", // ✅ Tự động crop để khung đồng đều
+              objectPosition: "center", // ✅ Cắt giữa ảnh (tránh lệch)
+              transition: "transform 0.3s ease-in-out",
             }}
           />
 
@@ -58,16 +71,17 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
           <Box
             className="card-overlay"
             sx={{
-              position: 'absolute',
+              position: "absolute",
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))',
+              background:
+                "linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))",
               opacity: 0,
-              transition: 'opacity 0.3s ease-in-out',
-              display: 'flex',
-              alignItems: 'flex-end',
+              transition: "opacity 0.3s ease-in-out",
+              display: "flex",
+              alignItems: "flex-end",
               p: 2,
             }}
           >
@@ -79,9 +93,9 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
                 setSelectedProduct(product);
               }}
               sx={{
-                bgcolor: 'white',
-                color: 'primary.main',
-                '&:hover': { bgcolor: 'grey.100' },
+                bgcolor: "white",
+                color: "primary.main",
+                "&:hover": { bgcolor: "grey.100" },
               }}
             >
               Xem chi tiết
@@ -93,11 +107,11 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
             label={product.category}
             size="small"
             sx={{
-              position: 'absolute',
+              position: "absolute",
               top: 12,
               left: 12,
-              bgcolor: 'secondary.main',
-              color: 'white',
+              bgcolor: "secondary.main",
+              color: "white",
               fontWeight: 600,
             }}
           />
@@ -107,15 +121,15 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
               toggleFavorite(product.id);
             }}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               top: 8,
               right: 8,
-              bgcolor: 'rgba(255,255,255,0.9)',
-              '&:hover': { bgcolor: 'white' },
+              bgcolor: "rgba(255,255,255,0.9)",
+              "&:hover": { bgcolor: "white" },
             }}
           >
             {favorites.includes(product.id) ? (
-              <Favorite sx={{ color: 'red' }} />
+              <Favorite sx={{ color: "red" }} />
             ) : (
               <FavoriteBorder />
             )}
@@ -129,10 +143,10 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
             sx={{
               fontWeight: 600,
               lineHeight: 1.2,
-              display: '-webkit-box',
+              display: "-webkit-box",
               WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
             {product.name}
@@ -143,39 +157,53 @@ const ProductCard = ({ product, toggleFavorite, favorites, setSelectedProduct })
             color="text.secondary"
             sx={{
               mb: 2,
-              display: '-webkit-box',
+              display: "-webkit-box",
               WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
             {product.shortDescription}
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Rating value={product.rating} precision={0.1} size="small" readOnly />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Rating
+                value={product.rating}
+                precision={0.1}
+                size="small"
+                readOnly
+              />
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 {product.rating}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Group sx={{ fontSize: 16, color: 'text.secondary' }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Group sx={{ fontSize: 16, color: "text.secondary" }} />
               <Typography variant="body2" color="text.secondary">
                 {product.students}
               </Typography>
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'secondary.main' }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 700, color: "secondary.main" }}
+            >
               {formatPrice(product.price)}
             </Typography>
             <Chip
               label={product.duration}
               size="small"
               variant="outlined"
-              sx={{ fontSize: '0.75rem' }}
+              sx={{ fontSize: "0.75rem" }}
             />
           </Box>
         </CardContent>

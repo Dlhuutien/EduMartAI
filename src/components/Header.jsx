@@ -13,15 +13,21 @@ import {
   Badge,
   useTheme,
   useMediaQuery,
+  Menu,
 } from "@mui/material";
 import {
-  Menu,
   Search,
   ShoppingCart,
   School,
   Favorite,
   FavoriteBorder,
+  AccountCircle,
+  History,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
+import LoginWithGoogle from "./LoginWithGoogle";
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 const Header = ({
   searchTerm,
@@ -29,10 +35,24 @@ const Header = ({
   priceFilter,
   setPriceFilter,
   onToggleDrawer,
+  user,
+  onLogin,
+  onSelectHistoryItem,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [history, setHistory] = useState([]);
+
+  const [historyMenuAnchor, setHistoryMenuAnchor] = useState(null);
+  const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setUserMenuAnchor(null);
+    localStorage.removeItem("user");
+    onLogin(null);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +60,22 @@ const Header = ({
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const loadHistory = () => {
+      const savedHistory = JSON.parse(localStorage.getItem("courseHistory")) || [];
+      setHistory(savedHistory);
+    };
+    loadHistory();
+
+    const handleStorageChange = (e) => {
+      if (e.key === "courseHistory") {
+        loadHistory();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   return (
@@ -60,7 +96,6 @@ const Header = ({
           maxWidth="xl"
           sx={{ display: "flex", alignItems: "center", gap: 2 }}
         >
-          {/* Logo & Menu */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton
               edge="start"
@@ -71,7 +106,7 @@ const Header = ({
                 "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
               }}
             >
-              <Menu />
+              <MenuIcon />
             </IconButton>
             <Typography
               variant="h5"
@@ -95,7 +130,6 @@ const Header = ({
             </Typography>
           </Box>
 
-          {/* Search & Filter */}
           <Box sx={{ flexGrow: 1, maxWidth: 600, mx: "auto" }}>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <TextField
@@ -138,17 +172,70 @@ const Header = ({
             </Box>
           </Box>
 
-          {/* Cart */}
-          <IconButton
-            sx={{
-              color: "inherit",
-              "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
-            }}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton
+              onClick={(e) => setHistoryMenuAnchor(e.currentTarget)}
+              sx={{
+                color: "inherit",
+                "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+              }}
+            >
+              <History />
+            </IconButton>
+            {!user ? (
+              <LoginWithGoogle onLoginSuccess={onLogin} />
+            ) : (
+              <IconButton
+                onClick={(e) => setUserMenuAnchor(e.currentTarget)}
+                sx={{ p: 0 }}
+              >
+                <img
+                  src={user.photoURL}
+                  alt="avatar"
+                  style={{ width: 36, height: 36, borderRadius: "50%" }}
+                />
+              </IconButton>
+            )}
+          </Box>
+
+          <Menu
+            anchorEl={historyMenuAnchor}
+            open={Boolean(historyMenuAnchor)}
+            onClose={() => setHistoryMenuAnchor(null)}
+            PaperProps={{ sx: { mt: 1, minWidth: 200 } }}
           >
-            <Badge badgeContent={3} color="secondary">
-              <ShoppingCart />
-            </Badge>
-          </IconButton>
+            {/* ✅ SỬA: Cả hai menu item đều gọi "history" để hiển thị tất cả */}
+            <MenuItem
+              onClick={() => {
+                onSelectHistoryItem("history");
+                setHistoryMenuAnchor(null);
+              }}
+            >
+              Lịch sử xem
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                onSelectHistoryItem("all");
+                setHistoryMenuAnchor(null);
+              }}
+            >
+              Xem tất cả
+            </MenuItem>
+          </Menu>
+
+          <Menu
+            anchorEl={userMenuAnchor}
+            open={Boolean(userMenuAnchor)}
+            onClose={() => setUserMenuAnchor(null)}
+            PaperProps={{ sx: { mt: 1, minWidth: 200 } }}
+          >
+            <MenuItem disabled sx={{ fontWeight: "bold" }}>
+              {user?.displayName}
+            </MenuItem>
+            <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
+              Đăng xuất
+            </MenuItem>
+          </Menu>
         </Container>
       </Toolbar>
     </AppBar>

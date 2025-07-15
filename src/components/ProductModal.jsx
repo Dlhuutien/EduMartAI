@@ -53,7 +53,7 @@ const ProductModal = ({ product, open, onClose }) => {
                 top: 8,
                 right: 8,
                 bgcolor: 'rgba(255,255,255,0.9)',
-                '&:hover': { bgcolor: 'white' },
+                '&:hover': { bgcolor: 'white' },  
                 zIndex: 1,
               }}
             >
