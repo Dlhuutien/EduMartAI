@@ -173,7 +173,7 @@ const ChatBox = ({ user, products }) => {
             position: "fixed",
             bottom: 90,
             right: 20,
-            width: 380,
+            width: 360,
             height: 450,
             zIndex: 1300,
             borderRadius: 3,

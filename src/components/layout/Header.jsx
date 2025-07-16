@@ -24,18 +24,16 @@ import {
 import LoginWithGoogle from "../ui/LoginWithGoogle";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
+import AIllectaLogo from "../../assets/logoAIllecta.png";
 
-const Header = ({
-  onToggleDrawer,
-  user,
-  onLogin,
-  onSelectHistoryItem,
-}) => {
+const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
   const [scrolled, setScrolled] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const navigate = useNavigate();
 
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
   const [historyMenuAnchor, setHistoryMenuAnchor] = useState(null);
@@ -58,15 +56,17 @@ const Header = ({
 
   useEffect(() => {
     const loadHistory = () => {
-      const savedHistory = JSON.parse(localStorage.getItem("courseHistory")) || [];
+      const savedHistory =
+        JSON.parse(localStorage.getItem("courseHistory")) || [];
       setHistory(savedHistory);
     };
-    
+
     const loadFavorites = () => {
-      const savedFavorites = JSON.parse(localStorage.getItem("courseFavorites")) || [];
+      const savedFavorites =
+        JSON.parse(localStorage.getItem("courseFavorites")) || [];
       setFavorites(savedFavorites);
     };
-    
+
     loadHistory();
     loadFavorites();
 
@@ -107,7 +107,11 @@ const Header = ({
       <Toolbar sx={{ py: 1 }}>
         <Container
           maxWidth="xl"
-          sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {/* Mobile Menu Button */}
@@ -124,17 +128,19 @@ const Header = ({
             </IconButton>
 
             {/* Logo */}
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: 700,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <School sx={{ fontSize: 30 }} />
-              <Box component="span">
+            <Box sx={{ display: "flex", alignItems: "center"}}>
+              <img
+                src={AIllectaLogo}
+                alt="AIlecta Logo"
+                style={{ height: 36, borderRadius: 4 }}
+              />
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: scrolled ? "primary.main" : "white",
+                }}
+              >
                 <Box
                   component="span"
                   sx={{ color: "secondary.main", display: "inline" }}
@@ -142,8 +148,8 @@ const Header = ({
                   AI
                 </Box>
                 llecta
-              </Box>
-            </Typography>
+              </Typography>
+            </Box>
           </Box>
 
           {/* Desktop Right Side */}
@@ -181,41 +187,56 @@ const Header = ({
             anchorEl={mobileMenuAnchor}
             open={Boolean(mobileMenuAnchor)}
             onClose={() => setMobileMenuAnchor(null)}
-            PaperProps={{ 
-              sx: { 
-                mt: 1, 
+            PaperProps={{
+              sx: {
+                mt: 1,
                 minWidth: 200,
                 borderRadius: 2,
                 boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-              } 
+              },
             }}
           >
             <Divider />
             <MenuItem
               onClick={() => handleMobileMenuSelect("history")}
-              sx={{ 
+              sx={{
                 py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
+                "&:hover": {
+                  bgcolor: "primary.light",
+                  color: "primary.contrastText",
+                },
               }}
             >
               <History sx={{ mr: 2 }} />
               Lịch sử xem ({history.length})
             </MenuItem>
+            {user && (
+              <MenuItem
+                onClick={() => handleMobileMenuSelect("favorites")}
+                sx={{
+                  py: 1.5,
+                  "&:hover": {
+                    bgcolor: "primary.light",
+                    color: "primary.contrastText",
+                  },
+                }}
+              >
+                <Favorite sx={{ mr: 2 }} />
+                Yêu thích ({favorites.length})
+              </MenuItem>
+            )}
+
             <MenuItem
-              onClick={() => handleMobileMenuSelect("favorites")}
-              sx={{ 
-                py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
+              onClick={() => {
+                handleMobileMenuSelect(null);
+                navigate("/");
               }}
-            >
-              <Favorite sx={{ mr: 2 }} />
-              Yêu thích ({favorites.length})
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleMobileMenuSelect("all")}
-              sx={{ 
+              sx={{
                 py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
+                "&:hover": {
+                  bgcolor: "primary.light",
+                  color: "primary.contrastText",
+                },
               }}
             >
               <ViewList sx={{ mr: 2 }} />
@@ -228,49 +249,63 @@ const Header = ({
             anchorEl={historyMenuAnchor}
             open={Boolean(historyMenuAnchor)}
             onClose={() => setHistoryMenuAnchor(null)}
-            PaperProps={{ 
-              sx: { 
-                mt: 1, 
+            PaperProps={{
+              sx: {
+                mt: 1,
                 minWidth: 200,
                 borderRadius: 2,
                 boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-              } 
+              },
             }}
           >
             <MenuItem
               onClick={() => {
                 onSelectHistoryItem("history");
                 setHistoryMenuAnchor(null);
+                navigate("/");
               }}
-              sx={{ 
+              sx={{
                 py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
+                "&:hover": {
+                  bgcolor: "primary.light",
+                  color: "primary.contrastText",
+                },
               }}
             >
               <History sx={{ mr: 2 }} />
               Lịch sử xem ({history.length})
             </MenuItem>
+            {user && (
+              <MenuItem
+                onClick={() => {
+                  onSelectHistoryItem("favorites");
+                  setHistoryMenuAnchor(null);
+                }}
+                sx={{
+                  py: 1.5,
+                  "&:hover": {
+                    bgcolor: "primary.light",
+                    color: "primary.contrastText",
+                  },
+                }}
+              >
+                <Favorite sx={{ mr: 2 }} />
+                Yêu thích ({favorites.length})
+              </MenuItem>
+            )}
+
             <MenuItem
               onClick={() => {
-                onSelectHistoryItem("favorites");
+                onSelectHistoryItem(null);
                 setHistoryMenuAnchor(null);
+                navigate("/");
               }}
-              sx={{ 
+              sx={{
                 py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
-              }}
-            >
-              <Favorite sx={{ mr: 2 }} />
-              Yêu thích ({favorites.length})
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                onSelectHistoryItem("all");
-                setHistoryMenuAnchor(null);
-              }}
-              sx={{ 
-                py: 1.5,
-                "&:hover": { bgcolor: "primary.light", color: "primary.contrastText" }
+                "&:hover": {
+                  bgcolor: "primary.light",
+                  color: "primary.contrastText",
+                },
               }}
             >
               <ViewList sx={{ mr: 2 }} />
@@ -283,18 +318,18 @@ const Header = ({
             anchorEl={userMenuAnchor}
             open={Boolean(userMenuAnchor)}
             onClose={() => setUserMenuAnchor(null)}
-            PaperProps={{ 
-              sx: { 
-                mt: 1, 
+            PaperProps={{
+              sx: {
+                mt: 1,
                 minWidth: 200,
                 borderRadius: 2,
                 boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-              } 
+              },
             }}
           >
-            <MenuItem 
-              disabled 
-              sx={{ 
+            <MenuItem
+              disabled
+              sx={{
                 fontWeight: "bold",
                 py: 1.5,
                 opacity: 0.8,
@@ -304,12 +339,15 @@ const Header = ({
               {user?.displayName}
             </MenuItem>
             <Divider />
-            <MenuItem 
-              onClick={handleLogout} 
-              sx={{ 
+            <MenuItem
+              onClick={handleLogout}
+              sx={{
                 color: "error.main",
                 py: 1.5,
-                "&:hover": { bgcolor: "error.light", color: "error.contrastText" }
+                "&:hover": {
+                  bgcolor: "error.light",
+                  color: "error.contrastText",
+                },
               }}
             >
               Đăng xuất
