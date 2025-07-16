@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./config/theme";
@@ -15,12 +15,25 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
   const [products, setProducts] = useState([]);
+  const [showNavbar, setShowNavbar] = useState(false);
+  const thumbnailRef = useRef();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+  }, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (thumbnailRef.current) {
+        const rect = thumbnailRef.current.getBoundingClientRect();
+        setShowNavbar(rect.bottom <= 56);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -32,12 +45,14 @@ const App = () => {
         onToggleDrawer={() => {}}
         onSelectHistoryItem={(id) => setSelectedHistoryId(id)}
       />
-      <Navbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        priceFilter={priceFilter}
-        setPriceFilter={setPriceFilter}
-      />
+      {showNavbar && (
+        <Navbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          priceFilter={priceFilter}
+          setPriceFilter={setPriceFilter}
+        />
+      )}
       <Routes>
         <Route
           path="/"
@@ -48,6 +63,7 @@ const App = () => {
               selectedHistoryId={selectedHistoryId}
               onProductsLoaded={setProducts}
               user={user}
+              thumbnailRef={thumbnailRef}
             />
           }
         />

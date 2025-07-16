@@ -15,11 +15,10 @@ import ProductCard from "../components/layout/ProductCard";
 import ProductModal from "../components/ui/ProductModal";
 import { fetchCourses } from "../services/courseService";
 import { getUserByUID, updateUserFavorites } from "../services/userService";
-
+import CourseThumnail from "../components/layout/CourseThumnail";
 // Component Layout tất cả course
 const AllCoursesLayout = ({
   filteredProducts,
-  products,
   loading,
   favorites,
   toggleFavorite,
@@ -27,9 +26,23 @@ const AllCoursesLayout = ({
   selectedHistoryId,
   user,
 }) => {
+  const totalStudents = filteredProducts.reduce(
+    (acc, p) => acc + Number(p.students || 0),
+    0
+  );
+
+  const averageRating =
+    filteredProducts.length > 0
+      ? (
+          filteredProducts.reduce(
+            (acc, p) => acc + Number(p.rating || 0),
+            0
+          ) / filteredProducts.length
+        ).toFixed(1)
+      : 0;
+
   return (
     <>
-      {/* Stats Cards */}
       <Box sx={{ mb: 6 }}>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} sm={4}>
@@ -59,9 +72,9 @@ const AllCoursesLayout = ({
               }}
             >
               <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                {products.reduce((acc, p) => acc + Number(p.students || 0), 0)}
+                {totalStudents}
               </Typography>
-              <Typography>Học viên</Typography>
+              <Typography>Học viên đã học</Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -75,7 +88,7 @@ const AllCoursesLayout = ({
               }}
             >
               <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                4.8
+                {averageRating}/5.0
               </Typography>
               <Typography>Đánh giá trung bình</Typography>
             </Paper>
@@ -83,7 +96,6 @@ const AllCoursesLayout = ({
         </Grid>
       </Box>
 
-      {/* Courses Grid */}
       {loading ? (
         <Box sx={{ textAlign: "center", py: 10 }}>
           <CircularProgress />
@@ -139,6 +151,7 @@ const AllCoursesLayout = ({
     </>
   );
 };
+
 
 // Component Layout đề xuất course
 const RecommendedCoursesLayout = ({
@@ -230,6 +243,7 @@ const Home = ({
   selectedHistoryId,
   onProductsLoaded,
   user,
+  thumbnailRef,
 }) => {
   const [favorites, setFavorites] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -482,6 +496,7 @@ const Home = ({
 
   return (
     <>
+     <CourseThumnail ref={thumbnailRef} />
       <Box sx={{ py: 6, bgcolor: "background.default" }}>
         <Container maxWidth="xl">
           <Box sx={{ textAlign: "center", mb: 6 }}>
