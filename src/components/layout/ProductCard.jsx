@@ -14,12 +14,7 @@ import {
 } from "@mui/material";
 import { Favorite, FavoriteBorder, Group } from "@mui/icons-material";
 import CustomSnackbar from "../ui/CustomSnackbar";
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(price);
+import formatPrice from "../utils/formatPrice";
 
 const ProductCard = ({
   product,

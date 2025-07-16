@@ -135,7 +135,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
             </IconButton>
 
             {/* Logo */}
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => (window.location.href = "/")}>
               <img
                 src={AIllectaLogo}
                 alt="AIlecta Logo"
