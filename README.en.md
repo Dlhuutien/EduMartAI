@@ -24,7 +24,7 @@
 
 ALlecta uses an AI-based algorithm to **suggest courses based on your favorites**, helping users discover more relevant content.
 
-### 🔍 How it works:
+### How it works:
 
 #### 1. Multi-factor similarity scoring:
 
