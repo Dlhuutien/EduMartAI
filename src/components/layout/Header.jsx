@@ -101,12 +101,14 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
       position="fixed"
       sx={{
         background: scrolled
-          ? "rgba(255, 255, 255, 0.95)"
-          : "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+          ? "linear-gradient(90deg, #00897b, #00897b)"
+          : "linear-gradient(90deg, #13b3a3ff, #d4af37)",
         backdropFilter: scrolled ? "blur(10px)" : "none",
         boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.1)" : "none",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        color: scrolled ? "#1976d2" : "white",
+        color: scrolled ? "#d4af37" : "white" ,
+        // background: "linear-gradient(90deg, #00897b, #d4af37)"
+
       }}
     >
       <Toolbar sx={{ py: 1 }}>
@@ -143,7 +145,8 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
                 variant="h6"
                 sx={{
                   fontWeight: 700,
-                  color: scrolled ? "primary.main" : "white",
+                  color: scrolled ? "white" : "#034a43ff",
+                  // background: "linear-gradient(90deg, #00897b, #d4af37)",
                 }}
               >
                 <Box
@@ -207,7 +210,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
               sx={{
                 py: 1.5,
                 "&:hover": {
-                  bgcolor: "primary.light",
+                 background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
@@ -221,7 +224,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
                 sx={{
                   py: 1.5,
                   "&:hover": {
-                    bgcolor: "primary.light",
+                   background: "linear-gradient(90deg, #00897b, #d4af37)",
                     color: "primary.contrastText",
                   },
                 }}
@@ -239,7 +242,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
               sx={{
                 py: 1.5,
                 "&:hover": {
-                  bgcolor: "primary.light",
+                 background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
@@ -272,7 +275,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
               sx={{
                 py: 1.5,
                 "&:hover": {
-                  bgcolor: "primary.light",
+                 background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
@@ -289,7 +292,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
                 sx={{
                   py: 1.5,
                   "&:hover": {
-                    bgcolor: "primary.light",
+                   background: "linear-gradient(90deg, #00897b, #d4af37)",
                     color: "primary.contrastText",
                   },
                 }}
@@ -308,7 +311,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
               sx={{
                 py: 1.5,
                 "&:hover": {
-                  bgcolor: "primary.light",
+                 background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}

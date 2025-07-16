@@ -12,15 +12,10 @@ import {
 } from "@mui/material";
 import { Search, FilterList } from "@mui/icons-material";
 
-const Navbar = ({
-  searchTerm,
-  setSearchTerm,
-  priceFilter,
-  setPriceFilter,
-}) => {
+const Navbar = ({ searchTerm, setSearchTerm, priceFilter, setPriceFilter }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   return (
     <Box
@@ -37,14 +32,14 @@ const Navbar = ({
         backdropFilter: "blur(8px)",
         transition: "all 0.3s ease",
         display: "flex",
-        justifyContent: "center", 
+        justifyContent: "center",
       }}
     >
       <Container maxWidth="xl">
-        <Box 
-          sx={{ 
-            display: "flex", 
-            gap: isMobile ? 1 : 2, 
+        <Box
+          sx={{
+            display: "flex",
+            gap: isMobile ? 1 : 2,
             alignItems: "center",
             flexDirection: isMobile ? "column" : "row",
             width: "100%",
@@ -60,11 +55,11 @@ const Navbar = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search 
-                    sx={{ 
+                  <Search
+                    sx={{
                       color: "text.secondary",
                       transition: "color 0.2s ease",
-                    }} 
+                    }}
                   />
                 </InputAdornment>
               ),
@@ -76,22 +71,43 @@ const Navbar = ({
                 bgcolor: "background.default",
                 borderRadius: 2,
                 transition: "all 0.3s ease",
-                "&:hover": { 
-                  bgcolor: "background.default",
+                position: "relative",
+                zIndex: 1,
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: "8px",
+                  padding: "2px",
+                  background: "transparent",
+                  WebkitMask:
+                    "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                  WebkitMaskComposite: "xor",
+                  pointerEvents: "none",
+                  zIndex: -1,
+                  transition: "background 0.3s ease",
+                },
+                "&:hover::before, &.Mui-focused::before": {
+                  background: "linear-gradient(90deg, #00897b, #d4af37)",
+                },
+                "&:hover": {
+                  transform: "translateY(-1px)",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-                  transform: "translateY(-1px)",
-                  "& .MuiInputAdornment-root .MuiSvgIcon-root": {
-                    color: "primary.main",
-                  },
                 },
-                "&.Mui-focused": { 
-                  bgcolor: "background.default",
+                "&.Mui-focused": {
+                  transform: "translateY(-1px)",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  transform: "translateY(-1px)",
-                  "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+                },
+                "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+                  transition: "color 0.3s ease",
+                },
+                "&:hover .MuiInputAdornment-root .MuiSvgIcon-root, &.Mui-focused .MuiInputAdornment-root .MuiSvgIcon-root":
+                  {
                     color: "primary.main",
                   },
-                },
               },
               "& .MuiOutlinedInput-input": {
                 fontSize: isMobile ? "0.875rem" : "1rem",
@@ -102,19 +118,18 @@ const Navbar = ({
               },
             }}
           />
-          
           <Select
             value={priceFilter}
             onChange={(e) => setPriceFilter(e.target.value)}
             size={isMobile ? "small" : "medium"}
             startAdornment={
               <InputAdornment position="start">
-                <FilterList 
-                  sx={{ 
-                    color: "text.secondary", 
+                <FilterList
+                  sx={{
+                    color: "text.secondary",
                     fontSize: isMobile ? "1rem" : "1.2rem",
                     ml: 1,
-                  }} 
+                  }}
                 />
               </InputAdornment>
             }
@@ -125,8 +140,9 @@ const Navbar = ({
               borderRadius: 2,
               fontSize: isMobile ? "0.875rem" : "1rem",
               transition: "all 0.3s ease",
-              "&:hover": { 
-                bgcolor: "background.default",
+              "&:hover": {
+                // bgcolor: "background.default",
+                background: "linear-gradient(90deg, #00897b, #d4af37)",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
                 transform: "translateY(-1px)",
                 "& .MuiSelect-icon": {
@@ -147,48 +163,48 @@ const Navbar = ({
               },
             }}
           >
-            <MenuItem 
+            <MenuItem
               value="all"
               sx={{
                 fontSize: isMobile ? "0.875rem" : "1rem",
                 "&:hover": {
-                  bgcolor: "primary.light",
+                  background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
             >
               Tất cả giá
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               value="low"
               sx={{
                 fontSize: isMobile ? "0.875rem" : "1rem",
                 "&:hover": {
-                  bgcolor: "primary.light",
+                  background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
             >
               Dưới 500K
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               value="medium"
               sx={{
                 fontSize: isMobile ? "0.875rem" : "1rem",
                 "&:hover": {
-                  bgcolor: "primary.light",
+                  background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}
             >
               500K - 1M
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               value="high"
               sx={{
                 fontSize: isMobile ? "0.875rem" : "1rem",
                 "&:hover": {
-                  bgcolor: "primary.light",
+                  background: "linear-gradient(90deg, #00897b, #d4af37)",
                   color: "primary.contrastText",
                 },
               }}

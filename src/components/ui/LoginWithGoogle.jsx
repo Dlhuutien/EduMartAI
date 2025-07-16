@@ -50,9 +50,40 @@ const LoginWithGoogle = ({ onLoginSuccess }) => {
 
   return (
     <Button
-      variant="contained"
-      startIcon={<Google sx={{ color: "secondary.main" }} />}
       onClick={handleLogin}
+      startIcon={<Google sx={{ color: "#fff" }} />}
+      sx={{
+        background: "#34a99dff",
+        color: "#fff",
+        textTransform: "none",
+        fontWeight: "bold",
+        px: 2,
+        py: 1,
+        fontSize: {
+          xs: "0.7rem", // mobile
+          sm: "0.8rem", // tablet
+          md: "0.95rem", // desktop
+        },
+        padding: {
+          xs: "6px 10px",
+          sm: "8px 14px",
+          md: "10px 16px",
+        },
+        "& .MuiButton-startIcon": {
+          marginRight: {
+            xs: "4px",
+            sm: "6px",
+            md: "8px",
+          },
+          "& svg": {
+            fontSize: {
+              xs: "1rem",
+              sm: "1.2rem",
+              md: "1.5rem",
+            },
+          },
+        },
+      }}
     >
       Đăng nhập với Google
     </Button>

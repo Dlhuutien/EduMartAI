@@ -9,6 +9,9 @@ export const getUserByEmail = (email) => {
 export const updateUserFavorites = (userId, favorites) => {
   return API.put(`/users/${userId}`, { favorites });
 };
-export const getUserByUID = (uid) => {
-  return API.get(`/users?uid=${uid}`);
+export const getUserByUID = async (uid) => {
+  const res = await API.get(`/users`);
+  const users = res.data;
+  const filtered = users.filter((u) => u.uid === uid);
+  return { data: filtered };
 };

@@ -24,7 +24,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+        background: "#00897b",
         color: "white",
         py: 6,
         mt: 8,
@@ -115,39 +115,6 @@ const Footer = () => {
                 </Typography>
               </Box>
             </Box>
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              Nhận tin mới
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.8, mb: 2 }}>
-              Đăng ký để nhận thông tin các khóa học mới và ưu đãi đặc biệt.
-            </Typography>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="Nhập email của bạn"
-              variant="outlined"
-              sx={{
-                input: { color: "white" },
-                "& .MuiOutlinedInput-root": {
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  color: "white",
-                  "& fieldset": { borderColor: "white" },
-                  "&:hover fieldset": { borderColor: "secondary.main" },
-                  "&.Mui-focused fieldset": { borderColor: "secondary.main" },
-                },
-              }}
-            />
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ mt: 2, fontWeight: 600, borderRadius: 2 }}
-              fullWidth
-            >
-              Đăng ký
-            </Button>
           </Grid>
         </Grid>
         <Divider sx={{ my: 4, borderColor: "rgba(255,255,255,0.2)" }} />

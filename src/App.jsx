@@ -6,7 +6,7 @@ import { theme } from "./config/theme";
 import Header from "./components/layout/Header";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import ChatBox from "./components/layout/ChatBox";
+import ChatBot from "./components/layout/ChatBot";
 import Home from "./pages/Home";
 
 const App = () => {
@@ -69,7 +69,7 @@ const App = () => {
         />
       </Routes>
       <Footer />
-      <ChatBox user={user} products={products} />
+      <ChatBot user={user}/>
     </ThemeProvider>
   );
 };

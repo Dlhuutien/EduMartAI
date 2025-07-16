@@ -16,226 +16,8 @@ import ProductModal from "../components/ui/ProductModal";
 import { fetchCourses } from "../services/courseService";
 import { getUserByUID, updateUserFavorites } from "../services/userService";
 import CourseThumnail from "../components/layout/CourseThumnail";
-// Component Layout tất cả course
-const AllCoursesLayout = ({
-  filteredProducts,
-  loading,
-  favorites,
-  toggleFavorite,
-  handleSelectProduct,
-  selectedHistoryId,
-  user,
-}) => {
-  const totalStudents = filteredProducts.reduce(
-    (acc, p) => acc + Number(p.students || 0),
-    0
-  );
-
-  const averageRating =
-    filteredProducts.length > 0
-      ? (
-          filteredProducts.reduce(
-            (acc, p) => acc + Number(p.rating || 0),
-            0
-          ) / filteredProducts.length
-        ).toFixed(1)
-      : 0;
-
-  return (
-    <>
-      <Box sx={{ mb: 6 }}>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                textAlign: "center",
-                background: "linear-gradient(135deg, #1976d2, #42a5f5)",
-                color: "white",
-              }}
-            >
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                {filteredProducts.length}
-              </Typography>
-              <Typography>Khóa học</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                textAlign: "center",
-                background: "linear-gradient(135deg, #ff9800, #ffb74d)",
-                color: "white",
-              }}
-            >
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                {totalStudents}
-              </Typography>
-              <Typography>Học viên đã học</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                textAlign: "center",
-                background: "linear-gradient(135deg, #4caf50, #81c784)",
-                color: "white",
-              }}
-            >
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                {averageRating}/5.0
-              </Typography>
-              <Typography>Đánh giá trung bình</Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {loading ? (
-        <Box sx={{ textAlign: "center", py: 10 }}>
-          <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Đang tải khóa học...</Typography>
-        </Box>
-      ) : (
-        <Grid container spacing={3} justifyContent="center">
-          {filteredProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <Box sx={{ width: "100%" }}>
-                <ProductCard
-                  product={product}
-                  toggleFavorite={toggleFavorite}
-                  favorites={favorites}
-                  setSelectedProduct={handleSelectProduct}
-                  user={user}
-                />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {!loading && filteredProducts.length === 0 && (
-        <Box sx={{ textAlign: "center", py: 8 }}>
-          <Avatar
-            sx={{
-              width: 80,
-              height: 80,
-              bgcolor: "grey.100",
-              mx: "auto",
-              mb: 2,
-            }}
-          >
-            <Search sx={{ fontSize: 40, color: "grey.400" }} />
-          </Avatar>
-          <Typography variant="h5" sx={{ fontWeight: 600 }}>
-            {selectedHistoryId === "history"
-              ? "Chưa có lịch sử xem"
-              : selectedHistoryId === "favorites"
-              ? "Chưa có khóa học yêu thích"
-              : "Không tìm thấy khóa học"}
-          </Typography>
-          <Typography color="text.secondary">
-            {selectedHistoryId === "history"
-              ? "Bạn chưa xem khóa học nào"
-              : selectedHistoryId === "favorites"
-              ? "Bạn chưa yêu thích khóa học nào"
-              : "Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc"}
-          </Typography>
-        </Box>
-      )}
-    </>
-  );
-};
-
-
-// Component Layout đề xuất course
-const RecommendedCoursesLayout = ({
-  recommendedCourses,
-  favoriteProducts,
-  loading,
-  favorites,
-  toggleFavorite,
-  handleSelectProduct,
-  user,
-}) => {
-  return (
-    <>
-      {/* Recommended Courses Section */}
-      <Box sx={{ mb: 4 }}>
-        <Paper
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            background: "linear-gradient(135deg, #db8f38ff, #185dcdff)",
-            color: "white",
-            mb: 4,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-            <School sx={{ fontSize: 30 }} />
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>
-              Khóa học đề xuất cho bạn
-            </Typography>
-          </Box>
-          <Typography sx={{ opacity: 0.9 }}>
-            Dựa trên sở thích học tập của bạn
-          </Typography>
-        </Paper>
-
-        {loading ? (
-          <Box sx={{ textAlign: "center", py: 10 }}>
-            <CircularProgress />
-            <Typography sx={{ mt: 2 }}>Đang tải đề xuất...</Typography>
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {recommendedCourses.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                <Box sx={{ width: "100%" }}>
-                  <ProductCard
-                    product={product}
-                    toggleFavorite={toggleFavorite}
-                    favorites={favorites}
-                    setSelectedProduct={handleSelectProduct}
-                    user={user}
-                  />
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-
-        {!loading && recommendedCourses.length === 0 && (
-          <Box sx={{ textAlign: "center", py: 8 }}>
-            <Avatar
-              sx={{
-                width: 80,
-                height: 80,
-                bgcolor: "grey.100",
-                mx: "auto",
-                mb: 2,
-              }}
-            >
-              <School sx={{ fontSize: 40, color: "grey.400" }} />
-            </Avatar>
-            <Typography variant="h5" sx={{ fontWeight: 600 }}>
-              Chưa có đề xuất
-            </Typography>
-            <Typography color="text.secondary">
-              Hãy thêm một số khóa học vào danh sách yêu thích để nhận được đề
-              xuất phù hợp
-            </Typography>
-          </Box>
-        )}
-      </Box>
-    </>
-  );
-};
+import AllCoursesLayout from "../components/layout/AllCoursesLayout";
+import RecommendedCoursesLayout from "../components/layout/RecommendedCoursesLayout";
 
 const Home = ({
   searchTerm,
@@ -253,7 +35,6 @@ const Home = ({
   const [currentTab, setCurrentTab] = useState(0);
   const [recommendedCourses, setRecommendedCourses] = useState([]);
 
-  // Load favorites from localStorage
   useEffect(() => {
     const savedFavorites =
       JSON.parse(localStorage.getItem("courseFavorites")) || [];
@@ -279,33 +60,33 @@ const Home = ({
     loadCourses();
   }, [onProductsLoaded]);
 
-  // Helper function to calculate text similarity
+  // Hàm hỗ trợ tính độ tương đồng giữa hai chuỗi văn bản
   const calculateSimilarity = (text1, text2) => {
     if (!text1 || !text2) return 0;
 
-    // Convert to lowercase and split into words
+    // Chuyển về chữ thường và tách thành từng từ
     const words1 = text1.toLowerCase().split(/\s+/);
     const words2 = text2.toLowerCase().split(/\s+/);
 
-    // Find common words
+    // Tìm các từ chung giữa hai chuỗi
     const commonWords = words1.filter((word) => words2.includes(word));
 
-    // Calculate Jaccard similarity
+    // Tính độ tương đồng Jaccard
     const union = new Set([...words1, ...words2]);
     const intersection = commonWords.length;
 
     return intersection / union.size;
   };
 
-  // Advanced recommendation algorithm
+  // Thuật toán gợi ý nâng cao
   const getRecommendedCourses = (favoriteProducts, allProducts) => {
     if (favoriteProducts.length === 0) return [];
 
     const recommendations = [];
 
-    // Calculate similarity score for each non-favorite product
+    // Tính điểm tương đồng cho từng sản phẩm chưa yêu thích
     allProducts.forEach((product) => {
-      if (favorites.includes(product.id)) return; // Skip already favorite courses
+      if (favorites.includes(product.id)) return;
 
       let totalScore = 0;
       let scoreCount = 0;
@@ -313,26 +94,26 @@ const Home = ({
       favoriteProducts.forEach((favProduct) => {
         let score = 0;
 
-        // Category exact match (highest weight)
+        // So sánh chính xác category (trọng số cao nhất)
         if (product.category === favProduct.category) {
           score += 0.4;
         }
 
-        // Name similarity
+        // So sánh độ giống tên khóa học
         const nameSimilarity = calculateSimilarity(
           product.name,
           favProduct.name
         );
         score += nameSimilarity * 0.25;
 
-        // Short description similarity
+        // So sánh mô tả ngắn
         const shortDescSimilarity = calculateSimilarity(
           product.shortDescription,
           favProduct.shortDescription
         );
         score += shortDescSimilarity * 0.2;
 
-        // Long description similarity (if available)
+        // So sánh mô tả dài (nếu có)
         if (product.longDescription && favProduct.longDescription) {
           const longDescSimilarity = calculateSimilarity(
             product.longDescription,
@@ -347,7 +128,7 @@ const Home = ({
 
       const averageScore = totalScore / scoreCount;
 
-      // Only recommend if similarity score is above threshold
+      // Chỉ gợi ý nếu điểm tương đồng vượt ngưỡng tối thiểu
       if (averageScore > 0.1) {
         recommendations.push({
           ...product,
@@ -356,13 +137,13 @@ const Home = ({
       }
     });
 
-    // Sort by similarity score and return top recommendations
+    // Sắp xếp theo điểm tương đồng và trả về top 8 gợi ý
     return recommendations
       .sort((a, b) => b.similarityScore - a.similarityScore)
       .slice(0, 8);
   };
 
-  // Generate recommended courses based on favorites
+  // Tạo gợi ý khóa học dựa trên yêu thích
   useEffect(() => {
     if (products.length > 0 && favorites.length > 0) {
       const favoriteProducts = products.filter((product) =>
@@ -496,23 +277,33 @@ const Home = ({
 
   return (
     <>
-     <CourseThumnail ref={thumbnailRef} />
+      <CourseThumnail ref={thumbnailRef} />
       <Box sx={{ py: 6, bgcolor: "background.default" }}>
         <Container maxWidth="xl">
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
               variant="h3"
               sx={{
-                fontWeight: 700,
-                background: "linear-gradient(45deg, #1976d2, #42a5f5)",
+                fontFamily: `"Be Vietnam Pro"`,
+                fontWeight: 800,
+                lineHeight: 1.25,
+                letterSpacing: "-0.5px",
+                background: "linear-gradient(90deg, #00897b, #d4af37)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 mb: 2,
-                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                fontSize: {
+                  xs: "1.8rem",
+                  sm: "2.4rem",
+                  md: "3rem",
+                  lg: "3.5rem",
+                },
+                textAlign: "center",
               }}
             >
               {getTitle()}
             </Typography>
+
             <Typography
               variant="h6"
               color="text.secondary"
@@ -527,17 +318,149 @@ const Home = ({
                 value={currentTab}
                 onChange={handleTabChange}
                 centered
-                sx={{ mb: 4 }}
+                sx={{
+                  mb: 4,
+                  "& .MuiTabs-root": {
+                    minHeight: 60,
+                  },
+                  "& .MuiTabs-indicator": {
+                    height: 3,
+                    borderRadius: "3px 3px 0 0",
+                    background: "linear-gradient(90deg, #00897b, #d4af37)",
+                    boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
+                  },
+                  "& .MuiTabs-flexContainer": {
+                    gap: 2,
+                    px: 2,
+                  },
+                  "& .MuiTab-root": {
+                    minHeight: 60,
+                    textTransform: "none",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    borderRadius: "12px 12px 0 0",
+                    border: "2px solid transparent",
+                    margin: "0 4px",
+                    padding: "12px 24px",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    background:
+                      "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+                    color: "#64748b",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: "linear-gradient(90deg, #00897b, #d4af37)",
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                      zIndex: -1,
+                    },
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 8px 25px rgba(102, 126, 234, 0.15)",
+                      border: "2px solid rgba(102, 126, 234, 0.2)",
+                      "&::before": {
+                        opacity: 0.05,
+                      },
+                      "& .MuiSvgIcon-root": {
+                        transform: "scale(1.1)",
+                        color: "#667eea",
+                      },
+                    },
+                    "&.Mui-selected": {
+                      color: "#fff",
+                      background: "linear-gradient(90deg, #00897b, #d4af37)",
+                      boxShadow: "0 8px 25px rgba(102, 126, 234, 0.3)",
+                      border: "2px solid rgba(255, 255, 255, 0.2)",
+                      "&::before": {
+                        opacity: 0,
+                      },
+                      "&:hover": {
+                        transform: "translateY(-1px)",
+                        boxShadow: "0 12px 35px rgba(102, 126, 234, 0.4)",
+                        "& .MuiSvgIcon-root": {
+                          color: "#fff",
+                          transform: "scale(1.05)",
+                        },
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#fff",
+                        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
+                      },
+                    },
+                    "& .MuiSvgIcon-root": {
+                      fontSize: "1.2rem",
+                      transition: "all 0.3s ease",
+                      marginRight: "8px",
+                    },
+                    "& .MuiTab-iconWrapper": {
+                      marginBottom: 0,
+                    },
+                  },
+                }}
               >
                 <Tab
                   label="Tất cả khóa học"
                   icon={<School />}
                   iconPosition="start"
+                  sx={{
+                    "&.Mui-selected": {
+                      "& .MuiSvgIcon-root": {
+                        animation: "pulse 2s infinite",
+                      },
+                    },
+                    "@keyframes pulse": {
+                      "0%": {
+                        transform: "scale(1)",
+                      },
+                      "50%": {
+                        transform: "scale(1.05)",
+                      },
+                      "100%": {
+                        transform: "scale(1)",
+                      },
+                    },
+                  }}
                 />
                 <Tab
                   label={`Đề xuất (${recommendedCourses.length})`}
                   icon={<Favorite />}
                   iconPosition="start"
+                  sx={{
+                    "&.Mui-selected": {
+                      "& .MuiSvgIcon-root": {
+                        animation: "heartbeat 1.5s infinite",
+                        color: "#ff6b9d",
+                      },
+                    },
+                    "&:hover": {
+                      "& .MuiSvgIcon-root": {
+                        color: "#ff6b9d !important",
+                      },
+                    },
+                    "@keyframes heartbeat": {
+                      "0%": {
+                        transform: "scale(1)",
+                      },
+                      "14%": {
+                        transform: "scale(1.1)",
+                      },
+                      "28%": {
+                        transform: "scale(1)",
+                      },
+                      "42%": {
+                        transform: "scale(1.1)",
+                      },
+                      "70%": {
+                        transform: "scale(1)",
+                      },
+                    },
+                  }}
                 />
               </Tabs>
             )}
