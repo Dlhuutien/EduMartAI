@@ -28,6 +28,18 @@ const ProductCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite(product.id);
+  };
+
+  const handleDetailClick = (e) => {
+    e.stopPropagation();
+    setSelectedProduct(product);
+  };
+
+  const isFavorite = favorites.includes(product.id);
+
   return (
     <Zoom in={true} style={{ transitionDelay: "100ms" }}>
       <Card
@@ -42,6 +54,7 @@ const ProductCard = ({
           "&:hover .card-image": { transform: "scale(1.05)" },
           "&:hover .card-overlay": { opacity: 1 },
         }}
+        onClick={handleDetailClick}
       >
         <Box sx={{ position: "relative", overflow: "hidden" }}>
           {!imageLoaded && (
@@ -60,9 +73,9 @@ const ProductCard = ({
             sx={{
               display: imageLoaded ? "block" : "none",
               width: "100%",
-              aspectRatio: "16/9", // ✅ Đảm bảo khung hình ngang đều nhau
-              objectFit: "cover", // ✅ Tự động crop để khung đồng đều
-              objectPosition: "center", // ✅ Cắt giữa ảnh (tránh lệch)
+              aspectRatio: "16/9",
+              objectFit: "cover",
+              objectPosition: "center",
               transition: "transform 0.3s ease-in-out",
             }}
           />
@@ -88,10 +101,7 @@ const ProductCard = ({
             <Button
               variant="contained"
               size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedProduct(product);
-              }}
+              onClick={handleDetailClick}
               sx={{
                 bgcolor: "white",
                 color: "primary.main",
@@ -116,19 +126,17 @@ const ProductCard = ({
             }}
           />
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleFavorite(product.id);
-            }}
+            onClick={handleFavoriteClick}
             sx={{
               position: "absolute",
               top: 8,
               right: 8,
               bgcolor: "rgba(255,255,255,0.9)",
               "&:hover": { bgcolor: "white" },
+              transition: "all 0.2s ease-in-out",
             }}
           >
-            {favorites.includes(product.id) ? (
+            {isFavorite ? (
               <Favorite sx={{ color: "red" }} />
             ) : (
               <FavoriteBorder />

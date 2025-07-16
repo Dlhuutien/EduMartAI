@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import { Home as HomeIcon } from "@mui/icons-material";
 import { theme } from "./config/theme";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+import Footer from "./components/layout/Footer";
+import Header from "./components/layout/Header";
+import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
-import ChatBox from "./components/ChatBox"; // Import ChatBox component
+import ChatBox from "./components/layout/ChatBox";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,7 +22,7 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
-  const [products, setProducts] = useState([]); // State để lưu danh sách sản phẩm
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -40,14 +41,16 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        priceFilter={priceFilter}
-        setPriceFilter={setPriceFilter}
         onToggleDrawer={() => setDrawerOpen(!drawerOpen)}
         user={user}
         onLogin={(userInfo) => setUser(userInfo)}
         onSelectHistoryItem={(id) => setSelectedHistoryId(id)}
+      />
+      <Navbar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        priceFilter={priceFilter}
+        setPriceFilter={setPriceFilter}
       />
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <List sx={{ width: 250 }}>
@@ -59,11 +62,11 @@ const App = () => {
           </ListItem>
         </List>
       </Drawer>
-      <Home 
-        searchTerm={searchTerm} 
-        priceFilter={priceFilter} 
+      <Home
+        searchTerm={searchTerm}
+        priceFilter={priceFilter}
         selectedHistoryId={selectedHistoryId}
-        onProductsLoaded={setProducts} // Callback để nhận danh sách sản phẩm
+        onProductsLoaded={setProducts}
       />
       <Footer />
       

@@ -9,8 +9,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import ProductCard from "../components/ProductCard";
-import ProductModal from "../components/ProductModal";
+import ProductCard from "../components/layout/ProductCard";
+import ProductModal from "../components/ui/ProductModal";
 import { fetchCourses } from "../services/courseService";
 
 const formatPrice = (price) =>
@@ -25,6 +25,12 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem("courseFavorites")) || [];
+    setFavorites(savedFavorites);
+  }, []);
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -49,6 +55,12 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
     if (selectedHistoryId === "history") {
       const history = JSON.parse(localStorage.getItem("courseHistory")) || [];
       setFilteredProducts(history);
+    } else if (selectedHistoryId === "favorites") {
+      const savedFavorites = JSON.parse(localStorage.getItem("courseFavorites")) || [];
+      const favoriteProducts = products.filter(product => 
+        savedFavorites.includes(product.id)
+      );
+      setFilteredProducts(favoriteProducts);
     } else if (selectedHistoryId === "all") {
       setFilteredProducts(products);
     } else if (selectedHistoryId) {
@@ -86,9 +98,14 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
   }, [searchTerm, priceFilter, products, selectedHistoryId]);
 
   const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
+    const newFavorites = favorites.includes(id) 
+      ? favorites.filter((f) => f !== id) 
+      : [...favorites, id];
+    
+    setFavorites(newFavorites);
+    localStorage.setItem("courseFavorites", JSON.stringify(newFavorites));
+    // Trigger storage event for other components
+    window.dispatchEvent(new Event("storage"));
   };
 
   const handleSelectProduct = (product) => {
@@ -129,7 +146,7 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
 
   return (
     <>
-      <Box sx={{ mt: 10, py: 6, bgcolor: "background.default" }}>
+      <Box sx={{ py: 6, bgcolor: "background.default" }}>
         <Container maxWidth="xl">
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
@@ -143,15 +160,18 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
                 fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               }}
             >
-              Khám phá khóa học tuyệt vời
+              {selectedHistoryId === "history" ? "Lịch sử xem" : 
+               selectedHistoryId === "favorites" ? "Khóa học yêu thích" : 
+               "Khám phá khóa học tuyệt vời"}
             </Typography>
             <Typography
               variant="h6"
               color="text.secondary"
               sx={{ maxWidth: 600, mx: "auto" }}
             >
-              Học từ các chuyên gia hàng đầu và phát triển sự nghiệp với những
-              khóa học toàn diện
+              {selectedHistoryId === "history" ? "Các khóa học bạn đã xem gần đây" : 
+               selectedHistoryId === "favorites" ? "Những khóa học bạn đã yêu thích" : 
+               "Học từ các chuyên gia hàng đầu và phát triển sự nghiệp với những khóa học toàn diện"}
             </Typography>
           </Box>
 
@@ -254,10 +274,14 @@ const Home = ({ searchTerm, priceFilter, selectedHistoryId, onProductsLoaded }) 
                 <Search sx={{ fontSize: 40, color: "grey.400" }} />
               </Avatar>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                Không tìm thấy khóa học
+                {selectedHistoryId === "history" ? "Chưa có lịch sử xem" :
+                 selectedHistoryId === "favorites" ? "Chưa có khóa học yêu thích" :
+                 "Không tìm thấy khóa học"}
               </Typography>
               <Typography color="text.secondary">
-                Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc
+                {selectedHistoryId === "history" ? "Bạn chưa xem khóa học nào" :
+                 selectedHistoryId === "favorites" ? "Bạn chưa yêu thích khóa học nào" :
+                 "Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc"}
               </Typography>
             </Box>
           )}

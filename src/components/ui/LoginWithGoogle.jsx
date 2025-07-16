@@ -1,8 +1,8 @@
 import React from "react";
-import { auth, provider, signInWithPopup } from "../config/firebase";
+import { auth, provider, signInWithPopup } from "../../config/firebase";
 import { Button } from "@mui/material";
 import { Google } from "@mui/icons-material";
-import { createUser, getUserByEmail } from "../services/userService";
+import { createUser, getUserByEmail } from "../../services/userService";
 
 const LoginWithGoogle = ({ onLoginSuccess }) => {
   const handleLogin = async () => {
@@ -39,9 +39,8 @@ const LoginWithGoogle = ({ onLoginSuccess }) => {
   return (
     <Button
       variant="contained"
-      startIcon={<Google />}
+      startIcon={<Google sx={{ color: "secondary.main" }} />}
       onClick={handleLogin}
-      sx={{ mt: 3 }}
     >
       Đăng nhập với Google
     </Button>
