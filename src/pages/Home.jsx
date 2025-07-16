@@ -14,6 +14,7 @@ import { Search, Favorite, School } from "@mui/icons-material";
 import ProductCard from "../components/layout/ProductCard";
 import ProductModal from "../components/ui/ProductModal";
 import { fetchCourses } from "../services/courseService";
+import { getUserByUID, updateUserFavorites } from "../services/userService";
 
 // Component Layout tất cả course
 const AllCoursesLayout = ({
@@ -30,7 +31,7 @@ const AllCoursesLayout = ({
     <>
       {/* Stats Cards */}
       <Box sx={{ mb: 6 }}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} sm={4}>
             <Paper
               sx={{
@@ -89,7 +90,7 @@ const AllCoursesLayout = ({
           <Typography sx={{ mt: 2 }}>Đang tải khóa học...</Typography>
         </Box>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} justifyContent="center">
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Box sx={{ width: "100%" }}>
@@ -228,7 +229,7 @@ const Home = ({
   priceFilter,
   selectedHistoryId,
   onProductsLoaded,
-  user
+  user,
 }) => {
   const [favorites, setFavorites] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -362,29 +363,29 @@ const Home = ({
   }, [products, favorites]);
 
   useEffect(() => {
+    let filtered = [...products];
+
     if (selectedHistoryId === "history") {
       const history = JSON.parse(localStorage.getItem("courseHistory")) || [];
-      setFilteredProducts(history);
+      filtered = history;
     } else if (selectedHistoryId === "favorites") {
       const savedFavorites =
         JSON.parse(localStorage.getItem("courseFavorites")) || [];
-      const favoriteProducts = products.filter((product) =>
+      filtered = products.filter((product) =>
         savedFavorites.includes(product.id)
       );
-      setFilteredProducts(favoriteProducts);
-      setCurrentTab(1); // Switch to recommended tab when viewing favorites
-    } else if (!selectedHistoryId) {
-      setFilteredProducts(products);
-    } else if (selectedHistoryId) {
+      setCurrentTab(1);
+    } else if (
+      selectedHistoryId &&
+      selectedHistoryId !== "history" &&
+      selectedHistoryId !== "favorites"
+    ) {
       const found = products.find(
         (p) => String(p.id) === String(selectedHistoryId)
       );
-      if (found) {
-        setFilteredProducts([found]);
-      }
+      filtered = found ? [found] : [];
     } else {
-      let filtered = [...products];
-
+      // Áp dụng lọc search và price
       if (searchTerm) {
         filtered = filtered.filter(
           (product) =>
@@ -404,20 +405,31 @@ const Home = ({
           return true;
         });
       }
-
-      setFilteredProducts(filtered);
     }
+
+    setFilteredProducts(filtered);
   }, [searchTerm, priceFilter, products, selectedHistoryId]);
 
-  const toggleFavorite = (id) => {
+  const toggleFavorite = async (id) => {
     const newFavorites = favorites.includes(id)
       ? favorites.filter((f) => f !== id)
       : [...favorites, id];
 
     setFavorites(newFavorites);
     localStorage.setItem("courseFavorites", JSON.stringify(newFavorites));
-    // Trigger storage event for other components
     window.dispatchEvent(new Event("storage"));
+
+    // Đồng bộ với MockAPI
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+      const { data: users } = await getUserByUID(currentUser.uid);
+      if (users.length > 0) {
+        const userId = users[0].id;
+        await updateUserFavorites(userId, newFavorites);
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật favorites lên MockAPI:", error);
+    }
   };
 
   const handleSelectProduct = (product) => {
@@ -536,7 +548,7 @@ const Home = ({
               favorites={favorites}
               toggleFavorite={toggleFavorite}
               handleSelectProduct={handleSelectProduct}
-              user={user} 
+              user={user}
             />
           )}
         </Container>

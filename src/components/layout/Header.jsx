@@ -43,7 +43,12 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
     await signOut(auth);
     setUserMenuAnchor(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("courseFavorites");
+    setFavorites([]);
+
+    window.dispatchEvent(new Event("storage"));
     onLogin(null);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -128,7 +133,7 @@ const Header = ({ onToggleDrawer, user, onLogin, onSelectHistoryItem }) => {
             </IconButton>
 
             {/* Logo */}
-            <Box sx={{ display: "flex", alignItems: "center"}}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <img
                 src={AIllectaLogo}
                 alt="AIlecta Logo"
